@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>姗姗王一起消消</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#fff5f1;color:#573f3b;font-family:system-ui,-apple-system,sans-serif}main{max-width:680px;margin:auto;padding:18px 14px}h1{text-align:center;margin:4px 0;font-size:28px}p{text-align:center;color:#98766c}.tabs{display:flex;gap:8px;justify-content:center;margin:14px 0}.tabs button,.bar button{border:0;border-radius:12px;padding:10px 13px;background:#ffe0dc;color:#714640;font-weight:600}.tabs .on,.primary{background:#e78186;color:white}.card{background:#fff;border-radius:22px;padding:14px;margin:12px 0;box-shadow:0 5px 20px #925f5012}.status{text-align:center;min-height:28px;color:#87534b}.board{display:grid;grid-template-columns:repeat(6,1fr);gap:7px;max-width:390px;margin:10px auto}.tile{aspect-ratio:1;border:0;border-radius:12px;background:#fff8f5;box-shadow:0 3px #e6c8be;font-size:27px}.tile:disabled{opacity:.32}.tray{display:flex;gap:5px;justify-content:center;margin:12px 0}.slot{width:39px;height:43px;border:1px dashed #d9b7ad;border-radius:9px;background:#fffaf8;font-size:22px}.bar{display:flex;justify-content:center;gap:7px;flex-wrap:wrap}.bar button:disabled{opacity:.4}.room{display:flex;gap:7px;justify-content:center}.room input{width:145px;padding:10px;border:1px solid #e8c9c0;border-radius:10px;text-align:center}.home{text-align:center;font-size:30px;min-height:48px}.small{text-align:center;font-size:12px;color:#a38379}@media(min-width:560px){.boards{display:grid;grid-template-columns:1fr 1fr;gap:12px}}
+</style>
+<main><h1>姗姗王一起消消 💗</h1><p>有你在，卡住也没关系</p>
+<div class="tabs"><button id="solo">单人闯关</button><button id="duo">双人合作</button></div>
+<div class="card"><div class="room"><input id="code" placeholder="输入房间码"><button class="primary" id="roomBtn">创建/加入房间</button></div><div class="small" id="roomMsg">双人模式可把房间码发给对方（联网同步将在后续版本接入）</div></div>
+<div class="status" id="msg"></div><div class="boards" id="boards"></div>
+<div class="card"><b>我们的小屋</b><div class="home" id="home">🪟 🛋️</div><div class="small" id="homeText">通关后获得共同装饰</div></div>
+</main>
+<script>
+const icons=['🍑','🍓','🐱','🌷','🧸','☕'];let mode=1,ps=[],done=false,room='';
+const $=id=>document.getElementById(id);
+function make(){let a=[];for(let k=0;k<6;k++)for(let n=0;n<3;n++)a.push(k);a.sort(()=>Math.random()-.5);return{deck:a,tray:[],sends:3,rescues:2}}
+function start(m){mode=m;ps=Array.from({length:m},make);done=false;$('solo').classList.toggle('on',m===1);$('duo').classList.toggle('on',m===2);say(m===1?'点击牌，凑齐三个相同图案。':'两边都清空就通关，可以互相送牌。');render()}
+function say(x){$('msg').textContent=x}
+function take(pi,i){let p=ps[pi];if(!p.deck[i]&&p.deck[i]!==0)return;if(p.tray.length>=7){say('槽位满了，试试送牌或救援。');return}p.tray.push(p.deck.splice(i,1)[0]);for(let k=0;k<6;k++)while(p.tray.filter(x=>x===k).length>=3){let j=p.tray.indexOf(k);p.tray.splice(j,1);j=p.tray.indexOf(k);p.tray.splice(j,1);j=p.tray.indexOf(k);p.tray.splice(j,1);say('消掉啦 ✨')}if(p.tray.length>=7)say('槽位满了，别着急。');check();render()}
+function send(pi){if(mode<2)return;let p=ps[pi],q=ps[1-pi];if(!p.sends||!p.tray.length){say('先保留一点牌，或次数已用完。');return}let t=p.tray.pop();if(q.tray.length>=7){p.tray.push(t);say('对方槽位满了。');return}q.tray.push(t);p.sends--;say('心意送达 💌');render()}
+function rescue(pi){if(mode<2)return;let p=ps[pi],q=ps[1-pi];if(!p.rescues||!q.tray.length){say('暂时帮不上忙。');return}p.tray.push(q.tray.pop());p.rescues--;say('我帮你拿一张 🤝');render()}
+function check(){if(ps.every(p=>!p.deck.length&&!p.tray.length)){done=true;say('一起通关！小屋可以添装饰啦 💗');$('home').textContent+=' 🪴';$('homeText').textContent='你们又完成了一次共同冒险';}}
+function render(){let root=$('boards');root.innerHTML='';ps.forEach((p,pi)=>{let c=document.createElement('section');c.className='card';c.innerHTML='<b>'+(mode===1?'你的牌堆':pi?'熊熊的牌堆':'桃桃的牌堆')+'</b><div class="board"></div><div class="tray"></div><div class="bar"></div>';let b=c.querySelector('.board');p.deck.forEach((k,i)=>{let x=document.createElement('button');x.className='tile';x.textContent=icons[k];x.onclick=()=>take(pi,i);b.append(x)});let t=c.querySelector('.tray');for(let i=0;i<7;i++){let x=document.createElement('button');x.className='slot';x.textContent=p.tray[i]==null?'':icons[p.tray[i]];x.disabled=true;t.append(x)}let bar=c.querySelector('.bar');if(mode===2){let s=document.createElement('button');s.textContent='💌 送一张 ('+p.sends+')';s.onclick=()=>send(pi);s.disabled=!p.sends;bar.append(s);let r=document.createElement('button');r.textContent='🤝 帮一下 ('+p.rescues+')';r.onclick=()=>rescue(pi);r.disabled=!p.rescues;bar.append(r)}root.append(c)})}
+$('solo').onclick=()=>start(1);$('duo').onclick=()=>start(2);$('roomBtn').onclick=()=>{room=$('code').value.trim()||Math.random().toString(36).slice(2,7).toUpperCase();$('code').value=room;say('房间 '+room+' 已准备好，把码发给对方即可。');};start(1);
+</script></html>
