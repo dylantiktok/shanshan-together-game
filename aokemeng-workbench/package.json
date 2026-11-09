@@ -45,7 +45,7 @@
     "sql.js": "^1.15.2"
   },
   "devDependencies": {
-    "electron": "^39.8.10",
+    "electron": "^45.2.3",
     "electron-builder": "^26.18.0"
   }
 }
