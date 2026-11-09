@@ -11,7 +11,8 @@
     "node": ">=20"
   },
   "scripts": {
-    "start": "electron .",
+    "start": "node scripts/start.js",
+    "setup:electron": "node scripts/install-electron.js",
     "server": "node server/cli.js",
     "test": "node --test --test-concurrency=1 test/*.test.js",
     "dist:win": "electron-builder --win nsis",
@@ -44,7 +45,7 @@
     "sql.js": "^1.15.2"
   },
   "devDependencies": {
-    "electron": "^45.2.3",
+    "electron": "^39.8.10",
     "electron-builder": "^26.18.0"
   }
 }

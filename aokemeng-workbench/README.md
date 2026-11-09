@@ -24,6 +24,17 @@ npm install
 npm start
 ```
 
+第一次运行 `npm start` 会自动下载 Electron 运行文件（约 100MB）。默认从 npmmirror 镜像下载，速度较快。
+新版 npm 默认不执行依赖包的安装脚本，所以 `npm install` 不会自动下载 Electron。
+
+如果下载中断，可以单独重新下载：
+
+```bash
+npm run setup:electron
+```
+
+如需改用官方源，先设置环境变量 `ELECTRON_MIRROR=https://github.com/electron/electron/releases/download/`。
+
 **无桌面壳（本机浏览器访问，适合调试）**
 
 ```bash
