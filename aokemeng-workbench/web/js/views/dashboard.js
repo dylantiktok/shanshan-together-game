@@ -37,8 +37,12 @@ export async function render(el, app) {
       card(t('refundAmount'), money(r.refunds.valueSen), [sourceBadges(r.refunds.bySource), ` ×${r.refunds.count}`]),
       card(t('adSpend'), money(r.adSpend.valueSen), sourceBadges(r.adSpend.bySource)),
       card(t('roas'), r.roas.value == null ? '—' : num(r.roas.value), h('small', { title: r.roas.note }, r.roas.attributedValue != null ? `${t('attributedGmv')} ROAS ${num(r.roas.attributedValue)}` : 'ⓘ')),
-      r.grossProfit ? card(t('grossProfit'), money(r.grossProfit.valueSen), [badge(t('src_estimate'), 'src-estimate'), ` ${t('coverage')} ${r.grossProfit.coveragePct}%`], r.grossProfit.coveragePct < 100 ? 'warn' : '') : null,
-      r.netProfit ? card(t('netProfit'), money(r.netProfit.valueSen), [badge(t('src_estimate'), 'src-estimate'), h('small', { title: r.netProfit.note }, ' ⓘ')], r.netProfit.valueSen < 0 ? 'bad' : '') : null);
+      r.grossProfit ? card(t('grossProfit'), money(r.grossProfit.valueSen),
+        r.grossProfit.valueSen === null ? badge(t('src_none'), 'muted') : [badge(t('src_estimate'), 'src-estimate'), ` ${t('coverage')} ${r.grossProfit.coveragePct}%`],
+        r.grossProfit.coveragePct !== null && r.grossProfit.coveragePct < 100 ? 'warn' : '') : null,
+      r.netProfit ? card(t('netProfit'), money(r.netProfit.valueSen),
+        r.netProfit.valueSen === null ? badge(t('src_none'), 'muted') : [badge(t('src_estimate'), 'src-estimate'), h('small', { title: r.netProfit.note }, ' ⓘ')],
+        r.netProfit.valueSen < 0 ? 'bad' : '') : null);
 
     const hasFinance = !!r.grossProfit;
     const rankingCols = [

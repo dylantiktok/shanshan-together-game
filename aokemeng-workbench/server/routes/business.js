@@ -437,8 +437,8 @@ module.exports = function businessRoutes({ db }) {
       ['广告 ROAS', d.range.roas.value ?? '', ''],
     ];
     if (d.range.grossProfit) {
-      rows.push(['商品毛利(MYR)', money(d.range.grossProfit.valueSen), `估算；成本覆盖率 ${d.range.grossProfit.coveragePct}%`]);
-      rows.push(['预估净利润(MYR)', money(d.range.netProfit.valueSen), '估算']);
+      rows.push(['商品毛利(MYR)', money(d.range.grossProfit.valueSen), d.range.grossProfit.coveragePct === null ? '无数据' : `估算；成本覆盖率 ${d.range.grossProfit.coveragePct}%`]);
+      rows.push(['预估净利润(MYR)', money(d.range.netProfit.valueSen), d.range.netProfit.valueSen === null ? '无数据' : '估算']);
     }
     rows.push(['', '', ''], ['店铺排名', '', '']);
     d.ranking.forEach((s, i) => rows.push([`${i + 1}. ${s.name}`, money(s.sales), `${s.orders} 单`]));

@@ -66,6 +66,10 @@ test('没有数据时经营总览为空，不生成虚假数据', async () => {
   assert.equal(d.hasData, false);
   assert.equal(d.range.sales.valueSen, 0);
   assert.deepEqual(d.range.sales.bySource, {});
+  // 无数据时毛利/净利润为 null（显示“—”），不能显示成 0 或“覆盖率 100%”
+  assert.equal(d.range.grossProfit.valueSen, null);
+  assert.equal(d.range.grossProfit.coveragePct, null);
+  assert.equal(d.range.netProfit.valueSen, null);
 });
 
 test('多店铺 + 员工权限：店铺运营只能看到分配的店铺，且看不到用户管理', async () => {

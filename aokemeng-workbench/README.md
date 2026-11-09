@@ -45,13 +45,25 @@ npm run server
 
 启动后打开 `http://127.0.0.1:3780`。本地服务只监听 127.0.0.1，局域网其他电脑无法访问。
 
-**打包 Windows 安装包（在 Windows 上执行）**
+**桌面快捷方式（开发运行方式）**
+
+已能用 `npm start` 打开后，运行一次下面的命令，桌面和开始菜单就会出现“AOKEMENG 运营工作台”快捷方式：
 
 ```bash
-npm run dist:win
+npm run shortcut
 ```
 
-生成的 NSIS 安装包在 `dist/` 目录。macOS 安装包用 `npm run dist:mac`，需要在 macOS 上执行。
+以后双击快捷方式即可打开，不会弹出命令行窗口。移动或重新下载项目文件夹后，需要在新位置重新运行一次。
+
+**Windows 安装包（发给员工）**
+
+安装包由 GitHub Actions 在 Windows 机器上自动构建，配置文件是 `.github/workflows/build-workbench-windows.yml`：
+
+- 每次推送 `aokemeng-workbench/` 的改动都会构建一次，安装包在该次运行页面底部的 **Artifacts** 中下载。
+- 推送 `workbench-v0.1.0` 这样的标签时，安装包还会发布到 GitHub Releases。
+- 也可以在 Windows 本机上执行 `npm run dist:win`，安装包生成在 `dist/` 目录。
+
+安装包会为当前用户安装，不需要管理员权限，并自动创建桌面和开始菜单快捷方式。安装包目前**没有代码签名**，首次运行时 Windows 会弹出“Windows 已保护你的电脑”，点击“更多信息”→“仍要运行”即可。
 
 **运行测试**
 
@@ -67,8 +79,8 @@ npm test
 
 | 运行方式 | 数据目录 |
 |---|---|
-| Windows 桌面版 | `%APPDATA%\AOKEMENG Workbench\data\` |
-| macOS 桌面版 | `~/Library/Application Support/AOKEMENG Workbench/data/` |
+| Windows 桌面版（npm start 与安装版共用） | `%APPDATA%\AOKEMENG TikTok Operations Workbench\data\` |
+| macOS 桌面版 | `~/Library/Application Support/AOKEMENG TikTok Operations Workbench/data/` |
 | `npm run server` | `aokemeng-workbench/data/`（可用 `--data` 或环境变量 `AOKEMENG_DATA_DIR` 指定） |
 
 数据目录中包含：

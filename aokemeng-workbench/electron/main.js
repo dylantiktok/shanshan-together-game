@@ -1,13 +1,17 @@
 'use strict';
 /**
  * Electron 桌面壳：在进程内启动本地服务（127.0.0.1 随机端口），并打开窗口。
- * 数据保存在系统用户数据目录：
- *   Windows: %APPDATA%\AOKEMENG Workbench\data
- *   macOS:   ~/Library/Application Support/AOKEMENG Workbench/data
+ * 数据保存在系统用户数据目录（开发运行 npm start 与安装版共用同一份数据）：
+ *   Windows: %APPDATA%\AOKEMENG TikTok Operations Workbench\data
+ *   macOS:   ~/Library/Application Support/AOKEMENG TikTok Operations Workbench/data
  */
 const path = require('path');
 const { app, BrowserWindow, shell, dialog } = require('electron');
 const { startServer } = require('../server');
+
+// 固定数据目录：不随安装包名称变化；单实例锁也基于此目录，
+// 避免开发版与安装版同时运行、同时写同一个数据库
+app.setPath('userData', path.join(app.getPath('appData'), 'AOKEMENG TikTok Operations Workbench'));
 
 let running = null;
 
@@ -21,6 +25,7 @@ async function createWindow() {
     minWidth: 1100,
     minHeight: 700,
     title: 'AOKEMENG TikTok 智能运营工作台',
+    icon: path.join(__dirname, '..', 'build', 'icon.png'),
     webPreferences: { contextIsolation: true, nodeIntegration: false, sandbox: true },
   });
   win.removeMenu();

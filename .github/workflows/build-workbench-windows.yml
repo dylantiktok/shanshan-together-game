@@ -1,0 +1,57 @@
+# 在 GitHub 的 Windows 机器上构建 AOKEMENG 工作台安装包（.exe）
+# - 推送到分支（改动 aokemeng-workbench/ 时）或手动触发：构建结果在 Actions 运行页面的 Artifacts 中下载
+# - 推送 workbench-v* 标签（如 workbench-v0.1.0）：额外发布到 GitHub Releases
+name: Build Workbench (Windows)
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'aokemeng-workbench/**'
+      - '.github/workflows/build-workbench-windows.yml'
+    tags:
+      - 'workbench-v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: aokemeng-workbench
+    env:
+      # electron-builder 会自行下载打包用的 Electron，这里跳过开发用的下载
+      ELECTRON_SKIP_BINARY_DOWNLOAD: '1'
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: aokemeng-workbench/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm test
+
+      - name: Build installer
+        run: npm run dist:win
+
+      - name: Upload installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: AOKEMENG-Workbench-Setup
+          path: aokemeng-workbench/dist/*.exe
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Publish release
+        if: startsWith(github.ref, 'refs/tags/workbench-v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: aokemeng-workbench/dist/*.exe

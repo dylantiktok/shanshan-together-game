@@ -12,31 +12,60 @@
   },
   "scripts": {
     "start": "node scripts/start.js",
+    "shortcut": "node scripts/create-shortcut.js",
     "setup:electron": "node scripts/install-electron.js",
     "server": "node server/cli.js",
     "test": "node --test --test-concurrency=1 test/*.test.js",
-    "dist:win": "electron-builder --win nsis",
-    "dist:mac": "electron-builder --mac dmg"
+    "dist:win": "electron-builder --win nsis --x64 --publish never",
+    "dist:mac": "electron-builder --mac dmg --publish never"
   },
   "build": {
     "appId": "my.aokemeng.workbench",
     "productName": "AOKEMENG Workbench",
+    "copyright": "Copyright © AOKEMENG Malaysia Sdn Bhd",
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
     "files": [
       "electron/**",
       "server/**",
       "web/**",
+      "build/icon.png",
       "package.json"
     ],
+    "extraResources": [
+      {
+        "from": "templates",
+        "to": "templates"
+      }
+    ],
     "win": {
-      "target": "nsis"
-    },
-    "mac": {
-      "target": "dmg",
-      "category": "public.app-category.business"
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "build/icon.ico"
     },
     "nsis": {
       "oneClick": false,
-      "allowToChangeInstallationDirectory": true
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": "always",
+      "createStartMenuShortcut": true,
+      "shortcutName": "AOKEMENG 运营工作台",
+      "uninstallDisplayName": "AOKEMENG 运营工作台",
+      "artifactName": "AOKEMENG-Workbench-Setup-${version}.exe",
+      "deleteAppDataOnUninstall": false
+    },
+    "mac": {
+      "target": "dmg",
+      "category": "public.app-category.business",
+      "icon": "build/icon.png"
     }
   },
   "dependencies": {

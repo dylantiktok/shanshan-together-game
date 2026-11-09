@@ -120,10 +120,10 @@ function getDashboard(db, user, { from, to, shopId } = {}) {
     result.range.grossProfit = grossProfit(db, shopF, start, end);
     const gp = result.range.grossProfit;
     result.range.netProfit = {
-      valueSen: gp.valueSen - ads.spend - refunds.amount,
+      valueSen: gp.valueSen === null && !ads.spend && !refunds.amount ? null : (gp.valueSen || 0) - ads.spend - refunds.amount,
       source: 'estimate',
       note: '预估净利润 = 商品毛利(估算) - 广告花费 - 退款金额。未含仓储、人工、平台其他费用；以平台结算及财务账为准。',
-      incomplete: gp.coveragePct < 100,
+      incomplete: gp.coveragePct !== null && gp.coveragePct < 100,
     };
   }
   return result;
@@ -149,11 +149,12 @@ function grossProfit(db, shopF, start, end) {
     revenueCovered += rev;
   }
   return {
-    valueSen: value,
+    valueSen: items.length ? value : null,
     source: 'estimate',
     lineItems: items.length,
     lineItemsWithCost: covered,
-    coveragePct: revenueAll ? round2((revenueCovered / revenueAll) * 100) : 100,
+    // 区间内没有订单行时，毛利与覆盖率都没有意义，返回 null（界面显示“—”而不是 0）
+    coveragePct: revenueAll ? round2((revenueCovered / revenueAll) * 100) : null,
     note: '商品毛利按 SKU 成本档案与费率估算；缺少成本档案的订单行未计入。',
   };
 }
