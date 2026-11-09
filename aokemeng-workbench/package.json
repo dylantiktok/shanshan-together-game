@@ -66,7 +66,8 @@
       "target": "dmg",
       "category": "public.app-category.business",
       "icon": "build/icon.png"
-    }
+    },
+    "publish": null
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^1.6.0",
