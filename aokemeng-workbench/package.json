@@ -1,0 +1,50 @@
+{
+  "name": "aokemeng-workbench",
+  "productName": "AOKEMENG TikTok Operations Workbench",
+  "version": "0.1.0",
+  "description": "AOKEMENG TikTok 智能运营工作台 - 本地电商运营工作台 (Windows/macOS 桌面版)",
+  "main": "electron/main.js",
+  "private": true,
+  "author": "AOKEMENG Malaysia Sdn Bhd",
+  "license": "UNLICENSED",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "electron .",
+    "server": "node server/cli.js",
+    "test": "node --test --test-concurrency=1 test/*.test.js",
+    "dist:win": "electron-builder --win nsis",
+    "dist:mac": "electron-builder --mac dmg"
+  },
+  "build": {
+    "appId": "my.aokemeng.workbench",
+    "productName": "AOKEMENG Workbench",
+    "files": [
+      "electron/**",
+      "server/**",
+      "web/**",
+      "package.json"
+    ],
+    "win": {
+      "target": "nsis"
+    },
+    "mac": {
+      "target": "dmg",
+      "category": "public.app-category.business"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    }
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^1.6.0",
+    "express": "^5.3.0",
+    "sql.js": "^1.15.2"
+  },
+  "devDependencies": {
+    "electron": "^45.2.3",
+    "electron-builder": "^26.18.0"
+  }
+}

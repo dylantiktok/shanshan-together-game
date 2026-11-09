@@ -12,3 +12,6 @@
 这是纯静态网页，直接打开 `index.html` 即可。也可以在 GitHub 仓库的 Settings → Pages 中选择 Deploy from a branch，选择 main / root，等待生成 GitHub Pages 链接。
 
 远程两部手机的实时同步需要下一版接入数据库或 WebSocket 服务；当前房间码用于界面流程体验。
+
+## 其他项目
+- [`aokemeng-workbench/`](aokemeng-workbench/README.md)：AOKEMENG TikTok 智能运营工作台（本地桌面电商运营系统）
